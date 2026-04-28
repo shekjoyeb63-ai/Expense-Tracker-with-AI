@@ -875,7 +875,7 @@ async function login() {
   btn.innerHTML = '<span class="spinner"></span>Logging in...';
 
   try {
-    const res = await fetch(`${API}/auth/login`, {
+    const res = await fetch(`${API}/login`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password:pass})
@@ -906,7 +906,7 @@ async function register() {
   btn.innerHTML = '<span class="spinner"></span>Registering...';
 
   try {
-    const res = await fetch(`${API}/auth/register`, {
+    const res = await fetch(`${API}/register`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password:pass})
@@ -936,7 +936,7 @@ async function verifyOtp() {
   btn.innerHTML = '<span class="spinner"></span>Verifying...';
 
   try {
-    const res = await fetch(`${API}/auth/verify-otp`, {
+    const res = await fetch(`${API}/verify-otp`, {
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email: pendingOtpEmail, otp})
@@ -957,7 +957,7 @@ async function verifyOtp() {
 
 async function logout() {
   try {
-    await fetch(`${API}/auth/logout`, {
+    await fetch(`${API}/logout`, {
       method:'POST',
       headers:{'Authorization':`Bearer ${token}`}
     });
@@ -993,7 +993,7 @@ function showSection(name) {
 async function loadDashboard() {
   // Load total
   try {
-    const res = await fetch(`${API}/expenses/view_total`, {
+    const res = await fetch(`${API}/view_total`, {
       headers:{'Authorization':`Bearer ${token}`}
     });
     const data = await res.json();
@@ -1004,7 +1004,7 @@ async function loadDashboard() {
 
   // Load recent
   try {
-    const res = await fetch(`${API}/expenses/view?page=1&page_size=5`, {
+    const res = await fetch(`${API}/view?page=1&page_size=5`, {
       headers:{'Authorization':`Bearer ${token}`}
     });
     const data = await res.json();
@@ -1019,7 +1019,7 @@ async function loadDashboard() {
 async function loadExpenses() {
   document.getElementById('expense-list').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div>Loading...</div>';
   try {
-    const res = await fetch(`${API}/expenses/view?page=${currentPage}&page_size=10`, {
+    const res = await fetch(`${API}/view?page=${currentPage}&page_size=10`, {
       headers:{'Authorization':`Bearer ${token}`}
     });
     const data = await res.json();
@@ -1070,7 +1070,7 @@ async function deleteExpense(title, btn) {
   btn.disabled = true;
   btn.textContent = '...';
   try {
-    const res = await fetch(`${API}/expenses/delete`, {
+    const res = await fetch(`${API}/delete`, {
       method:'DELETE',
       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({title})
@@ -1094,7 +1094,7 @@ async function addExpense() {
   btn.innerHTML = '<span class="spinner"></span>Adding...';
 
   try {
-    const res = await fetch(`${API}/expenses/add`, {
+    const res = await fetch(`${API}/add`, {
       method:'POST',
       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({title, amount, category, date})
@@ -1122,7 +1122,7 @@ async function searchByCategory() {
   if (!category) return;
   document.getElementById('search-results').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div>Searching...</div>';
   try {
-    const res = await fetch(`${API}/expenses/search`, {
+    const res = await fetch(`${API}/search`, {
       method:'POST',
       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({category})
@@ -1138,7 +1138,7 @@ async function filterByDate() {
   if (!start || !end) return;
   document.getElementById('date-results').innerHTML = '<div class="empty-state"><div class="emoji">⏳</div>Filtering...</div>';
   try {
-    const res = await fetch(`${API}/expenses/date_range`, {
+    const res = await fetch(`${API}/date_range`, {
       method:'POST',
       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({start_date: start, end_date: end})
@@ -1166,7 +1166,7 @@ async function sendChat() {
   chatBox.scrollTop = chatBox.scrollHeight;
 
   try {
-    const res = await fetch(`${API}/expenses/chat`, {
+    const res = await fetch(`${API}/chat`, {
       method:'POST',
       headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},
       body: JSON.stringify({message: msg})
