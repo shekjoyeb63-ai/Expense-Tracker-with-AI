@@ -44,7 +44,11 @@ def create_app():
     limiter.init_app(app)
     global celery
     celery = make_celery(app)
-    CORS(app)
+    CORS(app, origins=[
+    "https://shekjoyeb63-ai.github.io",
+    "http://localhost:5500",
+    "http://127.0.0.1:5500"
+])
     Swagger(app)
 
     
