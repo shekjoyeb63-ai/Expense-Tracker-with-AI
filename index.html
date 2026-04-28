@@ -885,7 +885,10 @@ async function login() {
       token = data.token;
       localStorage.setItem('token', token);
       localStorage.setItem('userEmail', email);
+      btn.disabled = false;
+      btn.innerHTML = 'Login →';
       showApp();
+      return;          // ← exit here, don't reset button after showApp
     } else {
       showToast('auth-toast', data.message || 'Login failed', 'error');
     }
