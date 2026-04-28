@@ -137,7 +137,7 @@ def verify_otp_route():
 
 
 @auth_bp.route("/login", methods=["POST"])
-@limiter.limit("3 per minute")
+@limiter.limit("10 per minute")
 def login():
     """
     Login and get JWT token
