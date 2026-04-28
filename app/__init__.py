@@ -16,7 +16,7 @@ load_dotenv()
 
 jwt = JWTManager()
 bc = Bcrypt()
-celery = Celery()
+celery = None
 limiter = Limiter(get_remote_address, default_limits=["200 per day", "50 per hour"])
 
 def create_app():
