@@ -1,10 +1,9 @@
-from app.services.celery_worker import celery  
+from app.services.celery_worker import celery
 from app.services.email_service import send_otp_email
-from app.models.tables import sesssionLocal, Expenses, User
 import os
 from datetime import datetime, timedelta
 
-@celery.task  
+@celery.task
 def send_otp_email_task(email: str, otp: str):
     try:
         send_otp_email(email, otp)
@@ -12,7 +11,7 @@ def send_otp_email_task(email: str, otp: str):
     except Exception as e:
         print(f"Failed to send OTP email: {str(e)}")
 
-@celery.task  
+@celery.task
 def send_welcome_email_task(email: str):
     import smtplib
     from email.mime.text import MIMEText
@@ -26,8 +25,7 @@ def send_welcome_email_task(email: str):
         msg["Subject"] = "Welcome to Expense Tracker! 🎉"
         body = """
         Welcome to Expense Tracker!
-        Your account has been verified successfully.
-        You can now login and start tracking your expenses.
+        Your account has been verified. You can now login.
         Happy tracking!
         """
         msg.attach(MIMEText(body, "plain"))
@@ -39,11 +37,15 @@ def send_welcome_email_task(email: str):
     except Exception as e:
         print(f"Failed to send welcome email: {str(e)}")
 
-@celery.task  
+@celery.task
 def send_monthly_summary_task(user_id: int):
+    # ← ALL imports inside the function
     import smtplib
+    import os
     from email.mime.text import MIMEText
     from email.mime.multipart import MIMEMultipart
+    from app.models.tables import sesssionLocal, Expenses, User  # ← moved here
+
     db = sesssionLocal()
     try:
         user = db.query(User).filter(User.id == user_id).first()
@@ -70,13 +72,8 @@ def send_monthly_summary_task(user_id: int):
         msg = MIMEMultipart()
         msg["From"] = sender
         msg["To"] = user.email
-        msg["Subject"] = f"Your Monthly Expense Summary — {first_day.strftime('%B %Y')}"
-        body = f"""
-        Hi there!
-        Here is your expense summary for {first_day.strftime('%B %Y')}:
-{summary}
-        Total Spent: ₹{total:.2f}
-        """
+        msg["Subject"] = f"Monthly Summary — {first_day.strftime('%B %Y')}"
+        body = f"""Hi!\n\nSummary for {first_day.strftime('%B %Y')}:\n{summary}\n\nTotal: ₹{total:.2f}"""
         msg.attach(MIMEText(body, "plain"))
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
