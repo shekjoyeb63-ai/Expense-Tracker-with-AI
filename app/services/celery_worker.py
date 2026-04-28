@@ -2,15 +2,20 @@ from celery import Celery
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  
+load_dotenv()
+
+redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
+
+celery = Celery(
+    "app",
+    broker=redis_url,
+    backend=redis_url
+)
 
 def make_celery(app):
-    redis_url = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    
-    celery = Celery(
-        app.import_name,
-        broker=redis_url,
-        backend=redis_url
+    celery.conf.update(
+        broker_url=os.getenv("REDIS_URL", "redis://redis:6379/0"),
+        result_backend=os.getenv("REDIS_URL", "redis://redis:6379/0")
     )
 
     class ContextTask(celery.Task):
