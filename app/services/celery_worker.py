@@ -1,17 +1,11 @@
-from celery import Celery
 import os
-from dotenv import load_dotenv
+from celery import Celery
 
-load_dotenv()
+celery = Celery(__name__)
+celery.conf.broker_url = os.environ.get("REDIS_URL")
+celery.conf.result_backend = os.environ.get("REDIS_URL")
 
-redis_url = os.getenv("REDIS_URL", "redis://redis:6379/0")
-
-celery = Celery(
-    "app",
-    broker=redis_url,
-    backend=redis_url,
-    include=["app.services.tasks"]  # ← explicitly tell celery where tasks are
-)
+celery.autodiscover_tasks(['app.services'])
 
 celery.conf.update(
     task_serializer="json",
