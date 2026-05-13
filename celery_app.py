@@ -1,12 +1,8 @@
 import os
-from dotenv import load_dotenv
+from celery import Celery
 
-load_dotenv()
+celery = Celery(__name__)
+celery.conf.broker_url = os.environ.get("REDIS_URL")
+celery.conf.result_backend = os.environ.get("REDIS_URL")
 
-from app import create_app
-
-flask_app = create_app()
-
-from app import celery
-
-app = celery
+celery.autodiscover_tasks(['app.services'])
