@@ -1,8 +1,13 @@
 import os
 from celery import Celery
 
-celery = Celery(__name__)
-celery.conf.broker_url = os.environ.get("REDIS_URL")
-celery.conf.result_backend = os.environ.get("REDIS_URL")
+def make_celery():
+    celery = Celery(
+        'app',
+        broker=os.environ.get("REDIS_URL"),
+        backend=os.environ.get("REDIS_URL"),
+        include=['app.services.tasks']
+    )
+    return celery
 
-celery.autodiscover_tasks(['app.services'])
+celery = make_celery()
