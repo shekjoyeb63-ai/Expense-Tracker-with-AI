@@ -45,7 +45,7 @@ def create_app():
     global celery
     celery = make_celery(app)
     CORS(app, origins=[
-    "https://shekjoyeb63-ai.github.io",
+    "https://expense-tracker-ai-sheikh.netlify.app",
     "http://localhost:5500",
     "http://127.0.0.1:5500"
 ])
@@ -89,3 +89,5 @@ def create_app():
     app.register_blueprint(expenses_bp)
 
     return app
+
+
